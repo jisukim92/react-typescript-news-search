@@ -27,7 +27,7 @@
 - 기사를 unclip하면 더이상 "/clip"에서 확인할 수 없다.
 
 # 기술 스택
-- Javascript
+- typescript
 - React
 - Styled Components
 - React Router
