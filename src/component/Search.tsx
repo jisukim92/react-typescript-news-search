@@ -5,12 +5,6 @@ const Form = styled.form`
   width: 400px;
 `
 
-const InputField = styled.input`
-  &:focus {
-    background-color: red;
-  }
-`
-
 interface Props {
   setSearch: React.Dispatch<React.SetStateAction<string>>
   handleAddHistory: (text: string | number) => void
@@ -25,7 +19,7 @@ const Search = ({
 }: Props) => {
   return (
     <Form>
-      <InputField
+      <input
         type='text'
         placeholder='Search...'
         onChange={(e) => setSearch(e.target.value)}

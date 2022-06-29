@@ -10,8 +10,6 @@ import { Container } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 
 export const Home = () => {
-  const API_KEY = import.meta.env.VITE_API_KEY
-
   const [search, setSearch] = useState<string>('')
   const [inputFocus, setInputFocus] = useState(false)
 

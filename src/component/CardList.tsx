@@ -12,11 +12,14 @@ import { add, differenceInDays, format, sub, parseISO } from 'date-fns'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
+import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
 import Masonry from '@mui/lab/Masonry'
 
 import { Container } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { addClip, removeClip } from '../store/newsSlice'
 
 interface Props {
   news: NewsType[]
@@ -24,39 +27,24 @@ interface Props {
 }
 
 const CardList = ({ news, lastNewsElRef }: Props) => {
-  const [clipItem, setClipItem] = useState<NewsType[]>(
-    JSON.parse(localStorage.getItem('clipItem') || '[]')
-  )
-  const handleClip = (
-    abstract: string,
-    pub_date: string,
-    headline: string,
-    _id: string
-  ) => {
-    const newKeyword: NewsType = {
-      abstract,
-      pub_date,
-      headline: { main: headline },
-      _id,
-    }
+  const newsClips = useSelector((state: any) => state.newsSlice.clips)
 
-    if (clipItem.length === 0) {
-      setClipItem([newKeyword])
+  const dispatch = useDispatch()
+  const handleClip = (item: NewsType) => {
+    if (newsClips.length === 0) {
+      dispatch(addClip(item))
     } else {
-      if (clipItem.some((data) => data._id === _id)) {
-        setClipItem([...clipItem.filter((item: NewsType) => item._id !== _id)])
+      if (newsClips.some((data: any) => data._id === item._id)) {
+        dispatch(removeClip(item._id))
       } else {
-        setClipItem([newKeyword, ...clipItem])
+        dispatch(addClip(item))
       }
     }
   }
-  useEffect(() => {
-    localStorage.setItem('clipItem', JSON.stringify(clipItem))
-  }, [clipItem])
 
   return (
     <Container>
-      {news.map((item, index) => {
+      {news.map((item: NewsType, index) => {
         if (news.length === index + 1) {
           return (
             <Card key={item._id} ref={lastNewsElRef}>
@@ -70,21 +58,12 @@ const CardList = ({ news, lastNewsElRef }: Props) => {
                   {differenceInDays(parseISO(item.pub_date), new Date())}
                 </Typography>
 
-                <Button
-                  variant='contained'
-                  onClick={() =>
-                    handleClip(
-                      item.abstract,
-                      item.pub_date,
-                      item.headline.main,
-                      item._id
-                    )
-                  }
-                >
-                  {clipItem.some((data) => data._id === item._id)
+                <Button variant='contained' onClick={() => handleClip(item)}>
+                  {newsClips.some((data: any) => data._id === item._id)
                     ? 'UnClip'
                     : 'Clip'}
                 </Button>
+                <Link href={item.web_url}>Detail</Link>
               </CardContent>
             </Card>
           )
@@ -103,18 +82,14 @@ const CardList = ({ news, lastNewsElRef }: Props) => {
                 <Button
                   id={item.pub_date}
                   variant='contained'
-                  onClick={() =>
-                    handleClip(
-                      item.abstract,
-                      item.pub_date,
-                      item.headline.main,
-                      item._id
-                    )
-                  }
+                  onClick={() => handleClip(item)}
                 >
-                  {clipItem.some((data) => data._id === item._id)
+                  {newsClips.some((data: any) => data._id === item._id)
                     ? 'UnClip'
                     : 'Clip'}
+                </Button>
+                <Button variant='contained'>
+                  <a href={item.web_url}>Detail</a>
                 </Button>
               </CardContent>
             </Card>

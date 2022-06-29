@@ -3,6 +3,7 @@ export interface NewsType {
   pub_date: string
   headline: Headline
   _id: string
+  web_url: string
 }
 
 interface Headline {

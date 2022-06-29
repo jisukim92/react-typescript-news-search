@@ -1,14 +1,15 @@
 import { Button, Card, CardContent, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { NewsType } from '../NewsType'
+import { removeClip } from '../store/newsSlice'
 
 export const Clip = () => {
-  const [clipItem, setClipItem] = useState(
-    JSON.parse(localStorage.getItem('clipItem') || '[]')
-  )
-  console.log(clipItem)
+  const newsClips = useSelector((state: any) => state.newsSlice.clips)
+  const dispatch = useDispatch()
   return (
     <div>
-      {clipItem.map((item: any) => {
+      {newsClips.map((item: NewsType) => {
         return (
           <Card key={item.pub_date}>
             <CardContent>
@@ -17,7 +18,15 @@ export const Clip = () => {
               </Typography>
               <Typography>{item.abstract}</Typography>
               <Typography>{item.pub_date}</Typography>
-              <Button variant='contained'>UnClip</Button>
+              <Button
+                variant='contained'
+                onClick={() => dispatch(removeClip(item._id))}
+              >
+                UnClip
+              </Button>
+              <Button variant='contained'>
+                <a href={item.web_url}>Detail</a>
+              </Button>
             </CardContent>
           </Card>
         )

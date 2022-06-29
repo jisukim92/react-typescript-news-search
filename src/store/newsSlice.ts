@@ -25,21 +25,25 @@ export const newsSlice = createSlice({
       }
     },
     // 클립 제거
-    removeClip: (state: ClipType, action: PayloadAction<NewsType>) => {
-      const clipItems = current(state).clips
+    removeClip: (state: ClipType, action: PayloadAction<string>) => {
+      const clipItems = current(state.clips)
       return {
         ...state,
         clips: [
-          ...clipItems.filter(
-            (news: NewsType) => news._id !== action.payload._id
-          ),
+          ...clipItems.filter((news: NewsType) => news._id !== action.payload),
         ],
       }
     },
     addHistory: (state: ClipType, action: PayloadAction<HistoryItem>) => {
+      let newHistory = current(state.history)
+
+      newHistory = newHistory.filter((e) => e.text != action.payload.text)
+      if (newHistory.length === 5) {
+        newHistory.pop()
+      }
       return {
         ...state,
-        history: [action.payload, ...state.history],
+        history: [action.payload, ...newHistory],
       }
     },
   },
